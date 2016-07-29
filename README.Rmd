@@ -1,0 +1,77 @@
+---
+title: "Assignment 1"
+date: "17 July 2016"
+output: github_document
+
+---
+## Hello Octocat
+I love Octocat. She's the coolest cat in town.
+![](https://dl.dropboxusercontent.com/u/11805474/painblogr/biostats/images/octocat.png)
+
+```{r, quick look, echo=TRUE }
+dim(anscombe)
+names(anscombe)
+head(anscombe, n=6)
+tail(anscombe, n=6)
+summary(anscombe)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Including Code
+
+You can include R code in the document as follows:
+
+```{r r xy plot, echo=FALSE, fig.height=8, fig.width=8, fig.align='center', fig.path='./figures/', fig.ext='svg'}
+library(dplyr)
+library(readr)
+library(tidyr)
+data("anscombe")
+plot(x=anscombe$x1, y=anscombe$y1)
+abline(lm(y1 ~ x1, data = anscombe))
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r data_import, echo=TRUE}
+library(readr)
+
+df <- file.path('analgesic.csv')
+df <- data.frame('analgesic.csv')
+df <- read.csv('analgesic.csv')
+
+```
+
+```{r data_summary, echo=TRUE}
+library(readr)
+
+dim(df)
+names(df)
+head(df, n=6)
+tail(df, n=6)
+summary(df)
+
+```
+
+```{r data_tidy, echo=TRUE}
+library(tidyr)
+library(dplyr)
+
+
+df_1 <- gather(df, key = Key, value = Value, Measurement_1, Measurement_2, Measurement_3, -ID)
+df_2 <- group_by(df_1)
+df_2
+
+summarise(df_2, mean = mean(Value))
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
