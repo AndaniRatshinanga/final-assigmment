@@ -72,6 +72,85 @@ df_2
 summarise(df_2, mean = mean(Value))
 
 
+
 ```
+#chunk 1
+## Null hypothesis
+ * HO: The chicks weights is dependent on the feed
+## Alternative hypothesis 
+* H1: the chicks weight is not dependent on the feed
+```{r tidy_data, echo=TRUE}
+# read chick weight
+x<-read.csv("chick-weights.csv")
+# tidy the data
+boxplot(x$weight~x$feed)
+
+# state statistical test
+chickanova <-aov(weight~feed, data = x)
+summary(chickanova)
+
+#underlying assumption
+"compares means or samples of more than 3 groups"
+# degrees of freedom and p value
+df = 5
+"p-value < 0.05"
+"accept null hypothesis"
+
+```
+ # chunk 2
+ #hypothesis
+ ## Null hypothesis
+ * Drinking contaminated water does not cause gastroenteritis
+ ## Alternative hypothesis
+ * drinking contaminated water does cause gastroenteritis
+```{r the hotzone, echo=TRUE}
+library(knitr)
+# read outbreak of severe gastroenteritis
+x <- read.csv("gastroenteritis (1).csv")
+y <- xtabs(~Consumption + Outcome, data = x)
+y
+barplot(y, beside = TRUE, ylab = "water consumption", xlab = "clinical presentation",main = "Investigation of gastroenteritis outbreak", col = c("blue", "green", "yellow"))
+legend("top", c("<1 glasses/day", ">4 glasses/day", "1 to 4 glasses/day"), fill = c("blue", "green", "yellow"))
+# statistical test
+Z <- chisq.test(y, correct = TRUE)
+Z
+
+```
+
+##Underlying assumptions
+* two categorical variables from a single population
+* used to determine whether there is an association between 2 variable names 
+## interpretation of outcomes
+* p< 0.05, therefor reject the null hypothesis and accept the alternative hypothesis
+
+chunk 3
+## Null hypothesis
+* Recieving chemotherapy does not cause nausea
+## Alternative hypothesis
+* Recieving chemotherapy does cause nausea
+```{r Nausea, echo=TRUE}
+# read the intensity of nausea
+A <- read.csv("nausea.csv")
+
+#tidy data
+# rating scale is anchored at 0(no nausea) to 6(severe nausea and vomiting) therefore change row 8 coloumn 3.
+A[8,3] = 4
+A
+# plotting of data
+plot(A$Nausea_before~A$Patient, type = "l", ylim = c(0,6), xlab = "Patients", ylab = "nausea score", main = "The intensity of nausea before and after receiving a 5ht3-receptor blocker")
+lines(A$Nausea_after~A$Patient, col= "blue")
+legend ("top", c("Nausea_before", "Nausea_after"),fill = c("black", "blue"))
+
+# statistical test
+wilcox.test(A$Nausea_before,A$Nausea_after, paired = TRUE)
+
+
+```
+
+## Test assumption
+* The data is paired and non-parametric
+* two measurements were taken from the same sample group. 
+* P< 0.05 Therefore reject the null hypothesis and accept the alternative hypothesis
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

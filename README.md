@@ -194,4 +194,150 @@ summarise(df_2, mean = mean(Value))
     ##   <dbl>
     ## 1 20.45
 
+chunk 1
+=======
+
+Null hypothesis
+---------------
+
+-   HO: The chicks weights is dependent on the feed \#\# Alternative hypothesis
+-   H1: the chicks weight is not dependent on the feed
+
+``` r
+# read chick weight
+x<-read.csv("chick-weights.csv")
+# tidy the data
+boxplot(x$weight~x$feed)
+```
+
+![](README_files/figure-markdown_github/tidy_data-1.png)
+
+``` r
+# state statistical test
+chickanova <-aov(weight~feed, data = x)
+summary(chickanova)
+```
+
+    ##             Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## feed         5 231129   46226   15.37 5.94e-10 ***
+    ## Residuals   65 195556    3009                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+#underlying assumption
+"compares means or samples of more than 3 groups"
+```
+
+    ## [1] "compares means or samples of more than 3 groups"
+
+``` r
+# degrees of freedom and p value
+df = 5
+"p-value < 0.05"
+```
+
+    ## [1] "p-value < 0.05"
+
+``` r
+"accept null hypothesis"
+```
+
+    ## [1] "accept null hypothesis"
+
+\# chunk 2 \#hypothesis \#\# Null hypothesis \* Drinking contaminated water does not cause gastroenteritis \#\# Alternative hypothesis \* drinking contaminated water does cause gastroenteritis
+
+``` r
+library(knitr)
+# read outbreak of severe gastroenteritis
+x <- read.csv("gastroenteritis (1).csv")
+y <- xtabs(~Consumption + Outcome, data = x)
+y
+```
+
+    ##                     Outcome
+    ## Consumption          ill not ill
+    ##   < 1 glasses/day     39     121
+    ##   > 4 glasses/day    265     146
+    ##   1 to 4 glasses/day 265     258
+
+``` r
+barplot(y, beside = TRUE, ylab = "water consumption", xlab = "clinical presentation",main = "Investigation of gastroenteritis outbreak", col = c("blue", "green", "yellow"))
+legend("top", c("<1 glasses/day", ">4 glasses/day", "1 to 4 glasses/day"), fill = c("blue", "green", "yellow"))
+```
+
+![](README_files/figure-markdown_github/the%20hotzone-1.png)
+
+``` r
+# statistical test
+Z <- chisq.test(y, correct = TRUE)
+Z
+```
+
+    ## 
+    ##  Pearson's Chi-squared test
+    ## 
+    ## data:  y
+    ## X-squared = 74.925, df = 2, p-value < 2.2e-16
+
+Underlying assumptions
+----------------------
+
+-   two categorical variables from a single population
+-   used to determine whether there is an association between 2 variable names \#\# interpretation of outcomes
+-   p&lt; 0.05, therefor reject the null hypothesis and accept the alternative hypothesis
+
+chunk 3 \#\# Null hypothesis \* Recieving chemotherapy does not cause nausea \#\# Alternative hypothesis \* Recieving chemotherapy does cause nausea
+
+``` r
+# read the intensity of nausea
+A <- read.csv("nausea.csv")
+
+#tidy data
+# rating scale is anchored at 0(no nausea) to 6(severe nausea and vomiting) therefore change row 8 coloumn 3.
+A[8,3] = 4
+A
+```
+
+    ##   Patient Nausea_before Nausea_after
+    ## 1       1             3            2
+    ## 2       2             4            0
+    ## 3       3             6            1
+    ## 4       4             2            3
+    ## 5       5             2            1
+    ## 6       6             4            1
+    ## 7       7             5            0
+    ## 8       8             6            4
+
+``` r
+# plotting of data
+plot(A$Nausea_before~A$Patient, type = "l", ylim = c(0,6), xlab = "Patients", ylab = "nausea score", main = "The intensity of nausea before and after receiving a 5ht3-receptor blocker")
+lines(A$Nausea_after~A$Patient, col= "blue")
+legend ("top", c("Nausea_before", "Nausea_after"),fill = c("black", "blue"))
+```
+
+![](README_files/figure-markdown_github/Nausea-1.png)
+
+``` r
+# statistical test
+wilcox.test(A$Nausea_before,A$Nausea_after, paired = TRUE)
+```
+
+    ## Warning in wilcox.test.default(A$Nausea_before, A$Nausea_after, paired =
+    ## TRUE): cannot compute exact p-value with ties
+
+    ## 
+    ##  Wilcoxon signed rank test with continuity correction
+    ## 
+    ## data:  A$Nausea_before and A$Nausea_after
+    ## V = 34, p-value = 0.02897
+    ## alternative hypothesis: true location shift is not equal to 0
+
+Test assumption
+---------------
+
+-   The data is paired and non-parametric
+-   two measurements were taken from the same sample group.
+-   P&lt; 0.05 Therefore reject the null hypothesis and accept the alternative hypothesis
+
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
