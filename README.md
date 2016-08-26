@@ -341,3 +341,116 @@ Test assumption
 -   P&lt; 0.05 Therefore reject the null hypothesis and accept the alternative hypothesis
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Null hypothesis
+===============
+
+-   The housing price is not dependent on the interest rate \# Alternative hypothesis
+-   The housing price is dependent on the interest rate
+
+``` r
+# import data
+
+G <- read.csv("housing-prices.csv")
+G
+```
+
+    ##    interest_rate median_house_price_USD
+    ## 1             10                 183800
+    ## 2             10                 183200
+    ## 3             10                 174900
+    ## 4              9                 173500
+    ## 5              8                 172900
+    ## 6              7                 173200
+    ## 7              8                 173200
+    ## 8              8                 169700
+    ## 9              8                 174500
+    ## 10             8                 177900
+    ## 11             7                 188100
+    ## 12             7                 203200
+    ## 13             8                 230200
+    ## 14             7                 258200
+    ## 15             7                 309800
+    ## 16             6                 329800
+
+``` r
+# Tidy data
+interest= G$interest_rate
+house_price = G$median_house_price_USD
+head(cbind(interest, house_price))
+```
+
+    ##      interest house_price
+    ## [1,]       10      183800
+    ## [2,]       10      183200
+    ## [3,]       10      174900
+    ## [4,]        9      173500
+    ## [5,]        8      172900
+    ## [6,]        7      173200
+
+``` r
+# scatter plot
+plot( interest, house_price, xlab= "interest", ylab = "house_price")
+abline(lm(G$median_house_price_USD ~ G$interest_rate, data = G), col= "blue", lwd= 2)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-1-1.png)
+
+``` r
+# linear regression
+G1 <- lm(G$median_house_price_USD ~ G$interest_rate, data = G)
+summary(G1)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = G$median_house_price_USD ~ G$interest_rate, data = G)
+    ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -55865 -31631 -16406  27212  80735 
+    ## 
+    ## Coefficients:
+    ##                 Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)       399229      74427   5.364 9.99e-05 ***
+    ## G$interest_rate   -24309       9205  -2.641   0.0194 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 43180 on 14 degrees of freedom
+    ## Multiple R-squared:  0.3325, Adjusted R-squared:  0.2848 
+    ## F-statistic: 6.974 on 1 and 14 DF,  p-value: 0.01937
+
+``` r
+ # diagnostic plot 1
+plot( x= G1$fitted.values, y=G1$residuals, main = "Homoskedasticity", pch = 19, col= "blue")
+abline(h=0, col= "green", lwd= 2)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-1-2.png)
+
+``` r
+#diagnostic plot 2 : Gaussian residual distribution
+qqnorm(G1$residuals)
+qqline(G1$residuals)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-1-3.png)
+
+``` r
+# Binary outcome variable: the variables have non-Gaussian error distribution
+glm (G$median_house_price_USD ~ G$interest_rate, data = G)
+```
+
+    ## 
+    ## Call:  glm(formula = G$median_house_price_USD ~ G$interest_rate, data = G)
+    ## 
+    ## Coefficients:
+    ##     (Intercept)  G$interest_rate  
+    ##          399229           -24309  
+    ## 
+    ## Degrees of Freedom: 15 Total (i.e. Null);  14 Residual
+    ## Null Deviance:       3.91e+10 
+    ## Residual Deviance: 2.61e+10  AIC: 390.8
+
+\# test assumptions \* I did the scatter plot to determine the trend or the relationship \# disgnostics for linear regression \* I did qq plot to determine if the residuals are normally distributed \* I did the Gaussian residual distribution to determine the variance of the fitted values \* I did the generalized linear model because the diagnostics I ran were not normally distributed. \# test interpretation \* p-value = 0.01937 therefore reject the null hypotehsis and accept the alternative hypothesis. \* degrees of freedom : 15 Total (i.e. Null); 14 Residual \# test statistics \* F-statistic: 6.974 on 1

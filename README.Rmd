@@ -154,3 +154,53 @@ wilcox.test(A$Nausea_before,A$Nausea_after, paired = TRUE)
 
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Null hypothesis
+* The housing price is not dependent on the interest rate
+# Alternative hypothesis
+* The housing price is dependent on the interest rate
+```{r echo= TRUE}
+# import data
+
+G <- read.csv("housing-prices.csv")
+G
+# Tidy data
+interest= G$interest_rate
+house_price = G$median_house_price_USD
+head(cbind(interest, house_price))
+
+# scatter plot
+plot( interest, house_price, xlab= "interest", ylab = "house_price")
+abline(lm(G$median_house_price_USD ~ G$interest_rate, data = G), col= "blue", lwd= 2)
+# linear regression
+G1 <- lm(G$median_house_price_USD ~ G$interest_rate, data = G)
+summary(G1)
+ # diagnostic plot 1
+plot( x= G1$fitted.values, y=G1$residuals, main = "Homoskedasticity", pch = 19, col= "blue")
+abline(h=0, col= "green", lwd= 2)
+
+#diagnostic plot 2 : Gaussian residual distribution
+qqnorm(G1$residuals)
+qqline(G1$residuals)
+
+# Binary outcome variable: the variables have non-Gaussian error distribution
+glm (G$median_house_price_USD ~ G$interest_rate, data = G)
+
+
+
+
+
+
+```
+ # test assumptions
+  * I did the scatter plot to determine the trend or the relationship
+  # disgnostics for linear regression
+  * I did qq plot to determine if the residuals are normally distributed 
+  * I did the Gaussian residual distribution to determine the variance of the fitted values
+  * I did the generalized linear model because the diagnostics I ran were not normally distributed.
+  # test interpretation
+  * p-value = 0.01937 therefore reject the null hypotehsis and accept the  alternative hypothesis.
+  * degrees of freedom : 15 Total (i.e. Null);  14 Residual
+  # test statistics
+  * F-statistic: 6.974 on 1
+  
